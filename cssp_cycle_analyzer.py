@@ -73,19 +73,20 @@ def cssp_cycle_analyzer(file_path, scenario, save_bar, save_box):
     for state in df['Cycle State'].unique():
         i += 1
         subset = df[df['Cycle State'] == state]
-        bg_colors = ['lightblue', 'lightgreen']
-        colors = ['blue', 'green']
+        bg_colors = ['salmon', 'lightblue', 'moccasin', 'lightgreen']
+        colors = ['red', 'blue', 'orange', 'green']
         plt.boxplot(subset['Cycle Time ms'], positions=[i], widths=0.4, patch_artist=True, boxprops=dict(facecolor=bg_colors[i % len(bg_colors)]), medianprops=dict(color=colors[i % len(colors)]), showfliers=False)
     plt.xticks(range(1, len(df['Cycle State'].unique()) + 1), [state_dict[state] for state in df['Cycle State'].unique()])
     plt.title(f'{scenario}: Box Plot of Cycle Times by Cycle State')
     plt.xlabel('Cycle State')
     plt.ylabel('Cycle Time (ms)')
+    plt.legend([f'{state_dict[state]}' for state in df['Cycle State'].unique()])
     plt.grid(True)
     # plt.show()
     plt.savefig(save_box)
 
 if __name__ == '__main__':
-    files = ['1IO_1blinking/cssp_cycle_times_1_1blink.csv', '2IO_2blinking/cssp_cycle_times_2_2blink.csv', '8IO_0blinking/cssp_cycle_times_8_0blink_bis.csv', '8IO_4blinking/cssp_cycle_times_8_4blink.csv', '8IO_8blinking/cssp_cycle_times_8_8blink.csv']
+    files = ['1IO_1blinking/cssp_cycle_times_1_1blink.csv', '2IO_2blinking/cssp_cycle_times_2_2blink.csv', '8IO_0blinking/cssp_cycle_times_8_0blink.csv', '8IO_4blinking/cssp_cycle_times_8_4blink.csv', '8IO_8blinking/cssp_cycle_times_8_8blink.csv']
     saves_bar = ['1IO_1blinking/cssp/histogramm_1IO_1.png', '2IO_2blinking/cssp/histogramm_2IO_2.png', '8IO_0blinking/cssp/histogramm_8IO_0.png', '8IO_4blinking/cssp/histogramm_8IO_4.png', '8IO_8blinking/cssp/histogramm_8IO_8.png']
     saves_box = ['1IO_1blinking/cssp/boxplot_1IO_1.png', '2IO_2blinking/cssp/boxplot_2IO_2.png', '8IO_0blinking/cssp/boxplot_8IO_0.png', '8IO_4blinking/cssp/boxplot_8IO_4.png', '8IO_8blinking/cssp/boxplot_8IO_8.png']
     for i in range(len(files)):

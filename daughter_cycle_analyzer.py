@@ -10,27 +10,36 @@ def daughter_cycle_analyzer(file_path, scenario, save_bar, save_box):
     state_stats = df.groupby('Read input')['Cycle Time ms'].describe()
     request_stats = df.groupby('Read input')['Request Time ms'].describe()
 
-    print("\nStatistics of Cycle Times by Cycle State:")
-    print(state_stats)
+    # print("\nStatistics of Cycle Times by Cycle State:")
+    # print(state_stats)
 
-    print("\nStatistics of Request Times by Request:")
-    print(request_stats)
+    # print("\nStatistics of Request Times by Request:")
+    # print(request_stats)
 
-    print("\nHighest cycle times:")
-    for state in df['Read input'].unique():
-        print(f"\nTop 10 highest cycle times for Cycle State {state}:")
-        print(df[df['Read input'] == state].nlargest(10, 'Cycle Time ms'))
+    # print("\nHighest cycle times:")
+    # for state in df['Read input'].unique():
+    #     print(f"\nTop 10 highest cycle times for Cycle State {state}:")
+    #     print(df[df['Read input'] == state].nlargest(10, 'Cycle Time ms'))
 
-    print("\nHighest cycle times:")
-    for state in df['Read input'].unique():
-        print(f"\nTop 10 highest cycle times for Cycle State {state}:")
-        print(df[df['Read input'] == state].nlargest(10, 'Request Time ms'))
+    # print("\nHighest cycle times:")
+    # for state in df['Read input'].unique():
+    #     print(f"\nTop 10 highest cycle times for Cycle State {state}:")
+    #     print(df[df['Read input'] == state].nlargest(10, 'Request Time ms'))
 
     print("\nSum of cycle times:")
     for state in df['Read input'].unique():
         print(f"\nSum of cycle times for Cycle State {state}:")
         print(df[df['Read input'] == state]['Cycle Time ms'].sum())
-
+        total_string = ""
+    for state in df['Read input'].unique():
+        state_data = df[df['Read input'] == state]['Cycle Time ms']
+        min_time = state_data.min()
+        avg_time = state_data.mean()
+        std_time = state_data.std()
+        max_time = state_data.max()
+        print(f"Cycle State {'Read' if state else 'Write'}: {min_time:.2f} / {avg_time:.2f}±{std_time:.2f} / {max_time:.2f}")
+        total_string += f" {min_time:.2f} / {avg_time:.2f}±{std_time:.2f} / {max_time:.2f} &"
+    print(total_string)
     # Plot statistics for each cycle state separately
     # for state in df['Read input'].unique():
     #     plt.figure(figsize=(10, 6))
@@ -85,10 +94,10 @@ def daughter_cycle_analyzer(file_path, scenario, save_bar, save_box):
     for state in df['Read input'].unique():
         i += 1
         subset = df[df['Read input'] == state]
-        bg_colors = ['lightblue', 'lightgreen']
-        colors = ['blue', 'green']
-        bg_colors_req = ['moccasin', 'salmon']
-        colors_req = ['orange', 'red']
+        bg_colors = ['lightgreen', 'lightblue']
+        colors = ['green', 'blue']
+        bg_colors_req = ['salmon', 'moccasin']
+        colors_req = ['red', 'orange']
         plt.boxplot(subset['Cycle Time ms'], positions=[i], widths=0.4, patch_artist=True, boxprops=dict(facecolor=bg_colors[i % len(bg_colors)]), medianprops=dict(color=colors[i % len(colors)]), showfliers=False)
         plt.boxplot(subset['Request Time ms'], positions=[i+0.5], widths=0.4, patch_artist=True, boxprops=dict(facecolor=bg_colors_req[i % len(bg_colors_req)]), medianprops=dict(color=colors_req[i % len(colors_req)]), showfliers=False)
     plt.xticks(range(1, len(df['Read input'].unique()) + 1), [f'{"Read" if state else "Write"}' for state in df['Read input'].unique()])
